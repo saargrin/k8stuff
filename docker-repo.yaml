@@ -1,0 +1,60 @@
+{
+  "apiVersion": "v1",
+  "kind": "ReplicationController",
+  "metadata": {
+     "name": "docker-repository",
+     "labels": {
+        "app": "docker-repository",
+        "version": "v1"
+     }
+   },
+   "spec": {
+      "replicas": 1,
+      "selector": {
+         "app": "docker-repository",
+         "version": "v1"
+      },
+      "template": {
+         "metadata": {
+            "labels": {
+               "app": "docker-repository",
+               "version": "v1"
+            }
+         },
+      "spec": {
+         "volumes": [
+          {
+             "name": "config",
+             "hostPath": { "path": "/home/shared/configs/docker" }
+          },{
+             "name": "data",
+             "hostPath": { "path": "/home/shared/docker" }
+          }
+         ],
+         "containers": [
+          {
+             "name": "registry",
+             "image": "registry:2.2.1",
+             "volumeMounts": [{"name":"config", "mountPath":"/etc/docker/"},{"name":"data", "mountPath": "/var/lib/registry
+"}],
+             "resources": {
+                "limits": {
+                   "cpu": "100m",
+                   "memory": "50Mi"
+                },
+                "requests": {
+                   "cpu": "100m",
+                   "memory": "50Mi"
+                }
+             },
+             "ports": [
+              {
+                 "containerPort": 5000
+              }
+              ]
+          }
+         ]
+        }
+      }
+   }
+}
